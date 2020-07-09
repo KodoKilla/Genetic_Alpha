@@ -82,7 +82,11 @@ def inicializa_pop(dataframe, df_teste, col, pessoas, ultima_coluna):
 
         fit = fitness(df_teste, individuo)
         individuo.append(fit)
-        print(individuo)
+        if(i == 0):
+            melhor = individuo
+        if(individuo[3] > melhor[3]):
+            melhor = individuo
+    print(melhor)
     return 1
 
 def traduz_individuo(individuo, valores, previsao):
@@ -102,7 +106,7 @@ def fitness(dataframe, individuo):
 
     fitness = (acertos / len(dataframe)) * 100
 
-    return round(fitness)
+    return fitness
 
 def main():
 
@@ -111,8 +115,8 @@ def main():
 
     df_teste = df[round((len(df) - (len(df)/3))):len(df)]
 
-    qtd_Colunas = df.shape[1]
+    qtd_Colunas = df.shape[1] - 2 #Removendo a coluna a ser prevista
 
-    inicializa_pop(df, df_teste, qtd_Colunas-2, 3, ultima_coluna)
+    inicializa_pop(df, df_teste, qtd_Colunas, 3, ultima_coluna)
 
 main()
