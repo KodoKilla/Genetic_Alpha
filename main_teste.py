@@ -68,7 +68,7 @@ def get_valor(dataframe, coluna, individuo):
 def get_preview(ultima_coluna, individuo):
     valores = pd.unique(ultima_coluna.to_numpy().reshape(-1))
     rangevalores = valores.shape[0]
-    valor = random.randint(0, rangevalores - 1)
+    valor = random.randint(1, rangevalores - 1)
     individuo.append(valor)
 
     return valores
@@ -108,7 +108,6 @@ def fitness(df_teste, individuo):
                 valor_teste = individuo[solucao][coluna+(coluna+1)]
                 if(df_teste.iloc[teste, int(col_teste)] == valor_teste):
                     total_carac += 1
-
             if(total_carac > melhor_valor):
                 melhor_valor = total_carac
                 melhor_coluna = solucao
@@ -133,9 +132,14 @@ def avalia_pop(individuos, df_teste):
         individuos_aux[x].append(fit)
         if (x == 0):
            melhor = individuos_aux[x][len(individuos_aux[x])-1]
+        if (x == 0):
+            pior = x
         if (individuos_aux[x][len(individuos_aux[x])-1] > melhor):
             melhor = individuos_aux[x][len(individuos_aux[x])-1]
+        if (individuos_aux[x][len(individuos_aux[x])-1] < individuos_aux[pior][len(individuos_aux[pior])-1]):
+            pior = x
     print('Melhor: ', melhor)
+    del individuos[pior]
     return 0
 
 def get_par(individuos):
@@ -144,7 +148,7 @@ def get_par(individuos):
     posicao = np.random.randint(0, total)
     return posicao
 
-def crossover(pai, mae):
+def crossover(df, pai, mae):
     tamanho_pai = len(pai)-1
     tamanho_mae = len(mae)-1
     filho = []
@@ -164,12 +168,27 @@ def crossover(pai, mae):
     filho1 = np.append(filho1_1, filho1_2).tolist()
     filho2 = np.append(filho2_1, filho2_2).tolist()
 
+    mutacao(df, filho1, 0)
+    mutacao(df, filho2, 0)
+
     filho.append(filho1)
     filho.append(filho2)
 
     return filho
 
-def mutacao():
+def mutacao(df, individuo, taxamutacao):
+    coluna = random.randint(0, 6)
+
+    dataframe = df[[str(coluna)]]
+    valores = pd.unique(dataframe.to_numpy().reshape(-1))
+    rangevalores = valores.shape[0]
+    valor = random.randint(0, rangevalores - 1)
+    valor = valores[valor]
+    if(coluna == 6):
+        individuo[12] = valor
+    else:
+        individuo[coluna+(coluna+1)] = valor
+
     return True
 
 def main():
@@ -187,12 +206,12 @@ def main():
     pop = inicializa_pop(df, df_teste, qtd_Colunas, tamanhopop, ultima_coluna)
 
     for geracao in range(0,qtdgeracoes):
-        filho = crossover(pop[get_par(pop)], pop[get_par(pop)])
+        filho = crossover(df, pop[get_par(pop)], pop[get_par(pop)])
         pop.append(filho)
 
         print("Geracao: ", geracao)
         avalia_pop(pop, df_teste)
         print()
-
+        print("Pop: ", pop)
 
 main()
