@@ -75,18 +75,20 @@ def get_preview(ultima_coluna, individuo):
 def inicializa_pop(dataframe, df_teste, col, pessoas, ultima_coluna):
     individuos = []
     for i in range(0, pessoas):
+        individuo_valores = []
         individuo = []
-        get_coluna(dataframe, col, individuo)
-        previsao = get_preview(ultima_coluna, individuo)
-        traduz_individuo(dataframe, individuo, previsao)
-
-        fit = fitness(dataframe, individuo)
+        get_coluna(dataframe, col, individuo_valores)
+        previsao = get_preview(ultima_coluna, individuo_valores)
+        traduz_individuo(dataframe, individuo_valores, previsao)
+        individuo.append(individuo_valores)
+        fit = fitness(dataframe, individuo_valores)
         individuo.append(fit)
         if(i == 0):
             melhor = individuo
-        if(individuo[len(individuo)-1] > melhor[len(individuo)-1]):
+        if(individuo[len(individuo)-1][0] > melhor[len(melhor)-1][0]):
             melhor = individuo
         individuos.append(individuo)
+    #del melhor[len(melhor)-1] #-> Remover Fitness
     print('Melhor: ',melhor)
 
     # print(individuos[1][1]) --> 1 Individuo - Coluna 2
@@ -102,8 +104,9 @@ def traduz_individuo(df, individuo, previsao):
     individuo[12] = previsao[individuo[12]]
 
 def fitness(df_teste, individuo):
+    ## Alterar fitness para ser uma estrutura
     acertos = 0
-    total_carac = 0
+    fitness = [1]
     for x in range(len(df_teste)):
         classificacao = 1
         total_carac = 0
@@ -116,7 +119,7 @@ def fitness(df_teste, individuo):
         if(classificacao == df_teste.iloc[x, df_teste.shape[1] - 1] and total_carac == 6):
             acertos += 1
 
-    fitness = (acertos / len(df_teste)) * 100
+    fitness[0] = (acertos / len(df_teste)) * 100
 
     return fitness
 
@@ -126,7 +129,7 @@ def get_par(individuos):
     posicao = np.random.randint(0, total)
     return posicao
 
-def crossover(individuos, taxa_co):
+def crossover(individuos):
     return True
 
 def main():
