@@ -131,14 +131,17 @@ def avalia_pop(individuos, df_teste):
         fit = fitness(df_teste, individuos_aux[x])
         individuos_aux[x].append(fit)
         if (x == 0):
-           melhor = individuos_aux[x][len(individuos_aux[x])-1]
+            melhor = individuos_aux[x][len(individuos_aux[x])-1]
+            melhor_pos = x
         if (x == 0):
             pior = x
         if (individuos_aux[x][len(individuos_aux[x])-1] > melhor):
             melhor = individuos_aux[x][len(individuos_aux[x])-1]
+            melhor_pos = x
         if (individuos_aux[x][len(individuos_aux[x])-1] < individuos_aux[pior][len(individuos_aux[pior])-1]):
             pior = x
     print('Melhor: ', melhor)
+    #print('Individuo: ', individuos_aux[melhor_pos])
     del individuos[pior]
     return 0
 
@@ -200,11 +203,12 @@ def main():
     # Inicializacao
     df = pd.DataFrame(pd.read_csv(dados))
     ultima_coluna = df.iloc[:, -1]
-    df_teste = df[round((len(df) - (len(df)/3))):len(df)]
+    df_teste = df[round((len(df) - (len(df)/2))):len(df)]
     qtd_Colunas = df.shape[1] - 1 #Removendo a coluna a ser prevista
 
     pop = inicializa_pop(df, df_teste, qtd_Colunas, tamanhopop, ultima_coluna)
 
+    print("Populacao Inicial: ", pop)
     for geracao in range(0,qtdgeracoes):
         filho = crossover(df, pop[get_par(pop)], pop[get_par(pop)])
         pop.append(filho)
@@ -212,6 +216,7 @@ def main():
         print("Geracao: ", geracao)
         avalia_pop(pop, df_teste)
         print()
-        print("Pop: ", pop)
+
+    print("Populacao Final: ", pop)
 
 main()
