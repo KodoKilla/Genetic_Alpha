@@ -73,8 +73,8 @@ def get_preview(ultima_coluna, individuo):
 
     return valores
 
-def inicializa_pop(dataframe, df_teste, col, pessoas, ultima_coluna):
-    individuos = []
+def inicializa_pop(dataframe, col, pessoas, ultima_coluna):
+    populacao = []
     for i in range(0, pessoas):
         individuo_valores = []
         individuo = []
@@ -82,9 +82,9 @@ def inicializa_pop(dataframe, df_teste, col, pessoas, ultima_coluna):
         previsao = get_preview(ultima_coluna, individuo_valores)
         traduz_individuo(dataframe, individuo_valores, previsao)
         individuo.append(individuo_valores)
-        individuos.append(individuo)
+        populacao.append(individuo)
     #del melhor[len(melhor)-1] #-> Remover Fitness
-    return individuos
+    return populacao
 
 def traduz_individuo(df, individuo, previsao):
     for i in range(0, 6):
@@ -94,7 +94,6 @@ def traduz_individuo(df, individuo, previsao):
     individuo[12] = previsao[individuo[12]]
 
 def fitness(df_teste, individuo):
-    ## Alterar fitness para ser uma estrutura
     acertos = 0
     fitness = [1]
     for teste in range(len(df_teste)):
@@ -147,7 +146,6 @@ def avalia_pop(individuos, df_teste):
 
 def get_par(individuos):
     total = len(individuos)
-
     posicao = np.random.randint(0, total)
     return posicao
 
@@ -206,7 +204,7 @@ def main():
     df_teste = df[round((len(df) - (len(df)/2))):len(df)]
     qtd_Colunas = df.shape[1] - 1 #Removendo a coluna a ser prevista
 
-    pop = inicializa_pop(df, df_teste, qtd_Colunas, tamanhopop, ultima_coluna)
+    pop = inicializa_pop(df, qtd_Colunas, tamanhopop, ultima_coluna)
 
     print("Populacao Inicial: ", pop)
     for geracao in range(0,qtdgeracoes):
