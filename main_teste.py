@@ -198,7 +198,7 @@ def main():
     # Parametros
     tamanhopop = 10 # Tamanho da populacao Inicial
     dados = 'car.csv' # DataSet
-    qtdgeracoes = 100
+    qtdgeracoes = 50
 
     # Inicializacao
     df = pd.DataFrame(pd.read_csv(dados))
